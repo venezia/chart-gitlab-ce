@@ -27,9 +27,9 @@ image: gitlab/gitlab-ce:9.3.6-ce.0
 ## If you want to have ingress deployed, set these variables
 ## ingress.class will allow you to indicate what ingress controller should handle your request, if needed
 ## A separate ingress controller might be desirable due to ssh mapping.
-#ingress:
-#  enabled: true
-#  sslEnabled: true
+ingress:
+  enabled: false
+  sslEnabled: false
 #  hostname: my.favorite.site.com
 #  class: gitlab
 #  tlsacme: true
