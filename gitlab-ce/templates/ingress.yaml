@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-testgl-ingress"
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- if .Values.ingress.class }}
+    kubernetes.io/ingress.class: "{{ .Values.ingress.class }}"
+    {{- end }}
+    {{- if .Values.ingress.tlsacme }}
+    kubernetes.io/tlsacme: "true"
+    {{- end }}
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.ingress.hostname }}
+    secretName: "{{ template "fullname" . }}-tls-secret"
+  rules:
+  - host: {{ .Values.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: {{ .Values.httpPort }}
+{{- end }}

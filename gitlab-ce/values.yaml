@@ -1,0 +1,153 @@
+## GitLab CE image
+## ref: https://hub.docker.com/r/gitlab/gitlab-ce/tags/
+##
+image: gitlab/gitlab-ce:9.3.6-ce.0
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## The URL (with protocol) that your users will use to reach the install.
+## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
+##
+#externalUrl: "https://my.favorite.site.com"
+
+## Change the initial default admin password if set. If not set, you'll be
+## able to set it when you first visit your install.
+##
+#gitlabRootPassword: "letmein"
+
+## For minikube, set this to NodePort, if using Ingress use ClusterIP, elsewhere use LoadBalancer
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+#serviceType: LoadBalancer
+
+## If you want to have ingress deployed, set these variables
+## ingress.class will allow you to indicate what ingress controller should handle your request, if needed
+## A separate ingress controller might be desirable due to ssh mapping.
+#ingress:
+#  enabled: true
+#  sslEnabled: true
+#  hostname: my.favorite.site.com
+#  class: gitlab
+#  tlsacme: true
+#  tls:
+#    key: "KEYGOESHERE"
+#    certificate: "CERTGOESHERE"
+
+## Configure external service ports
+## ref: http://kubernetes.io/docs/user-guide/services/
+sshPort: 22
+httpPort: 80
+httpsPort: 443
+
+## Configure email settings
+## ref: https://docs.gitlab.com/omnibus/settings/smtp.html
+email:
+  enabled: false
+#  address: "smtp.mailgun.org"
+#  port: 587
+#  authentication: "plain"
+#  enableStartTLSAuto: true
+#  username: "gitlab@my.favorite.site.com"
+#  password: "changeme"
+#  domain: "mg.my.favorite.site.com"
+#  from: "gitlab@my.favorite.site.com"
+#  replyTo: "noreply@my.favorite.site.com"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  ## GitLab requires a good deal of resources. We have split out Postgres and
+  ## redis, which helps some. Refer to the guidelines for larger installs.
+  ## ref: https://docs.gitlab.com/ce/install/requirements.html#hardware-requirements
+  requests:
+    memory: 1Gi
+    cpu: 500m
+  limits:
+    memory: 2Gi
+    cpu: 1
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## ref: https://docs.gitlab.com/ce/install/requirements.html#storage
+##
+persistence:
+  ## This volume persists generated configuration files, keys, and certs.
+  ##
+  gitlabEtc:
+    enabled: true
+    size: 1Gi
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+  ## This volume is used to store git data and other project files.
+  ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
+  ##
+  gitlabData:
+    enabled: true
+    size: 10Gi
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+
+
+scheduling:
+  affinity:
+    node:
+      type: requiredDuringSchedulingIgnoredDuringExecution
+      labels:
+#      - key: iamalabelkey
+#        operator: In
+#        values: ["value1", "value2"]
+  tolerations:
+#  - key: iamataintkey
+#    value: taintvalue
+#    effect: NoSchedule
+
+networkPolicy:
+  ingress:
+#    enabled: true
+#    namespaceLabels:
+#      - key: tenant
+#        value: customer1
+#    podLabels:
+#      - key: app
+#        value: frontend
+
+
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+  # 9.6 is the newest supported version for the GitLab container
+  imageTag: "9.6"
+  cpu: 1000m
+  memory: 1Gi
+
+  postgresUser: gitlab
+  postgresPassword: gitlab
+  postgresDatabase: gitlab
+
+  persistence:
+    size: 10Gi
+
+## Configuration values for the redis dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
+##
+redis:
+  redisPassword: "gitlab"
+
+  resources:
+    requests:
+      memory: 1Gi
+
+  persistence:
+    size: 10Gi

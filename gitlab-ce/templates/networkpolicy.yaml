@@ -1,0 +1,41 @@
+{{- if .Values.networkPolicy }}
+{{- if .Values.networkPolicy.ingress }}
+{{- if .Values.networkPolicy.ingress.enabled }}
+{{- if .Capabilities.APIVersions.Has "networking/v1"}}
+apiVersion: networking/v1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "fullname" . }}-ingresspolicy
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  ingress:
+  - from:
+    {{- if .Values.networkPolicy.ingress.namespaceLabels }}
+    - namespaceSelector:
+        matchLabels:
+          {{- range .Values.networkPolicy.ingress.namespaceLabels }}
+          {{ .key }}: {{ .value }}
+          {{- end }}
+    {{- end }}
+    {{- if .Values.networkPolicy.ingress.podLabels }}
+    - podSelector:
+        matchLabels:
+          {{- range .Values.networkPolicy.ingress.podLabels }}
+          {{ .key }}: {{ .value }}
+          {{- end }}
+    {{- end }}
+    ports:
+    - protocol: TCP
+      port: {{ .Values.sshPort }}
+    - protocol: TCP
+      port: {{ .Values.httpPort }}
+    - protocol: TCP
+      port: {{ .Values.httpsPort }}
+{{- end }}
+{{- end }}
+{{- end }}
