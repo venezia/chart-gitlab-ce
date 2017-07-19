@@ -12,17 +12,17 @@ image: gitlab/gitlab-ce:9.3.6-ce.0
 ## The URL (with protocol) that your users will use to reach the install.
 ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
 ##
-#externalUrl: "https://my.favorite.site.com"
+externalUrl: "https://my.favorite.site.com"
 
 ## Change the initial default admin password if set. If not set, you'll be
 ## able to set it when you first visit your install.
 ##
-#gitlabRootPassword: "letmein"
+gitlabRootPassword: "letmein"
 
 ## For minikube, set this to NodePort, if using Ingress use ClusterIP, elsewhere use LoadBalancer
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
 ##
-#serviceType: LoadBalancer
+serviceType: LoadBalancer
 
 ## If you want to have ingress deployed, set these variables
 ## ingress.class will allow you to indicate what ingress controller should handle your request, if needed
@@ -30,12 +30,12 @@ image: gitlab/gitlab-ce:9.3.6-ce.0
 ingress:
   enabled: false
   sslEnabled: false
-#  hostname: my.favorite.site.com
-#  class: gitlab
-#  tlsacme: true
-#  tls:
-#    key: "KEYGOESHERE"
-#    certificate: "CERTGOESHERE"
+  hostname: my.favorite.site.com
+  class: gitlab
+  tlsacme: true
+  tls:
+    key: "KEYGOESHERE"
+    certificate: "CERTGOESHERE"
 
 ## Configure external service ports
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -47,15 +47,15 @@ httpsPort: 443
 ## ref: https://docs.gitlab.com/omnibus/settings/smtp.html
 email:
   enabled: false
-#  address: "smtp.mailgun.org"
-#  port: 587
-#  authentication: "plain"
-#  enableStartTLSAuto: true
-#  username: "gitlab@my.favorite.site.com"
-#  password: "changeme"
-#  domain: "mg.my.favorite.site.com"
-#  from: "gitlab@my.favorite.site.com"
-#  replyTo: "noreply@my.favorite.site.com"
+  address: "smtp.mailgun.org"
+  port: 587
+  authentication: "plain"
+  enableStartTLSAuto: true
+  username: "gitlab@my.favorite.site.com"
+  password: "changeme"
+  domain: "mg.my.favorite.site.com"
+  from: "gitlab@my.favorite.site.com"
+  replyTo: "noreply@my.favorite.site.com"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -127,27 +127,15 @@ networkPolicy:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
-  # 9.6 is the newest supported version for the GitLab container
-  imageTag: "9.6"
-  cpu: 1000m
-  memory: 1Gi
-
+  serviceName: "postgresql"
   postgresUser: gitlab
   postgresPassword: gitlab
   postgresDatabase: gitlab
-
-  persistence:
-    size: 10Gi
 
 ## Configuration values for the redis dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
 ##
 redis:
+  serviceName: "redis"
   redisPassword: "gitlab"
 
-  resources:
-    requests:
-      memory: 1Gi
-
-  persistence:
-    size: 10Gi
