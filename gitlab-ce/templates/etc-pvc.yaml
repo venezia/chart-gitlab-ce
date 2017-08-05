@@ -5,7 +5,7 @@ metadata:
   name: {{ template "fullname" . }}-etc
   annotations:
   {{- if .Values.persistence.gitlabEtc.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.gitlabEtc.storageClass | quote }}
+    volume.beta.kubernetes.io/storage-class: "{{ if .Values.persistence.gitlabEtc.prefixReleaseToStorageClassName}}{{ .Release.Name }}-{{end}}{{ .Values.persistence.gitlabEtc.storageClass }}"
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}

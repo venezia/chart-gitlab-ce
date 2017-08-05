@@ -1,7 +1,7 @@
 ## GitLab CE image
 ## ref: https://hub.docker.com/r/gitlab/gitlab-ce/tags/
 ##
-image: gitlab/gitlab-ce:9.3.6-ce.0
+image: gitlab/gitlab-ce:9.4.3-ce.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -12,12 +12,12 @@ image: gitlab/gitlab-ce:9.3.6-ce.0
 ## The URL (with protocol) that your users will use to reach the install.
 ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
 ##
-externalUrl: "https://my.favorite.site.com"
+externalUrl: "http://gitlab.mysite.com"
 
 ## Change the initial default admin password if set. If not set, you'll be
 ## able to set it when you first visit your install.
 ##
-gitlabRootPassword: "letmein"
+#gitlabRootPassword: "letmein"
 
 ## For minikube, set this to NodePort, if using Ingress use ClusterIP, elsewhere use LoadBalancer
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
@@ -84,7 +84,8 @@ persistence:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass:
+    #storageClass: gitlab-storage
+    #prefixReleaseToStorageClassName: true
     accessMode: ReadWriteOnce
   ## This volume is used to store git data and other project files.
   ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
@@ -95,8 +96,18 @@ persistence:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass:
+    #storageClass: gitlab-storage
+    #prefixReleaseToStorageClassName: true
     accessMode: ReadWriteOnce
+
+  ## If you want to create a storage class for gitlab, do so here
+  #storageClasses:
+  #- name: gitlab-storage
+  #  prefixReleaseToName: true
+  #  type: gp2
+  #  zone: us-west-2b
+  #  #zones: [ 'us-west-2a', 'us-west-2b' ]
+  #  iopsPerGB:
 
 
 scheduling:
@@ -125,17 +136,28 @@ networkPolicy:
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+## If you need a deploy, consider https://quay.io/application/samsung_cnct/postgresql
 ##
 postgresql:
-  serviceName: "postgresql"
+  serviceName: "gitlab-postgresql"
   postgresUser: gitlab
   postgresPassword: gitlab
   postgresDatabase: gitlab
 
 ## Configuration values for the redis dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
+## If you need a deploy, consider https://quay.io/application/samsung_cnct/redis
 ##
 redis:
-  serviceName: "redis"
+  serviceName: "gitlab-redis"
   redisPassword: "gitlab"
 
+## Configuration values for RBAC
+## RBAC is needed by gitlab for prometheus data exports
+rbac:
+  enabled: true
+
+## Configuration values for runners
+## ref: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/environment_variables.md
+runners:
+  initialToken: "keanu-connery-53"
