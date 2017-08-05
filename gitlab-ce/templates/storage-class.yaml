@@ -1,0 +1,21 @@
+{{- if .Values.persistence.storageClasses }}
+{{- $releaseName := .Release.Name }}
+{{- range .Values.persistence.storageClasses }}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: "{{ if .prefixReleaseToName}}{{ $releaseName }}-{{ end }}{{ .name }}"
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: {{ .type }}
+  {{- if .zone }}
+  zone: {{ .zone }}
+  {{- end }}
+  {{- if .zones }}
+  zones: {{ range $i, $entry := .zones }}{{ if ne $i 0 }},{{ end }}{{ $entry }}{{end}}
+  {{- end }}
+  {{- if .iopsPerGB }}
+  iopsPerGB: {{ .iopsPerGB }}
+  {{- end }}
+{{- end }}
+{{- end }}

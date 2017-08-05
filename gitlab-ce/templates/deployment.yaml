@@ -84,6 +84,12 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: redis-password
+        {{- if .Values.runners }}
+        {{- if .Values.runners.initialToken }}
+        - name: GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN
+          value: {{ .Values.runners.initialToken | quote }}
+        {{- end }}
+        {{- end }}
         ports:
         - name: ssh
           containerPort: 22
@@ -118,6 +124,9 @@ spec:
           mountPath: /gitlab-data
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      {{- if .Values.rbac.enabled }}
+      serviceAccountName: "{{ .Release.Name }}-gitlab-serviceaccount"
+      {{- end }}
       {{- if .Values.scheduling.tolerations }}
       tolerations:
       {{- range .Values.scheduling.tolerations }}
