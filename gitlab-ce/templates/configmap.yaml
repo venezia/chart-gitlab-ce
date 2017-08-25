@@ -70,3 +70,6 @@ data:
     nginx['proxy_set_headers'] = { "X-Forwarded-Proto" => "https", "X-Forwarded-Ssl" => "on" }
     {{- end }}
     {{- end }}
+    {{- if .Values.prometheus.enabled }}
+    prometheus_monitoring['enable'] = {{ .Values.prometheus.enabled }}
+    {{- end }}
