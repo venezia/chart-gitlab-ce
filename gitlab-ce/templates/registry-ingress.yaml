@@ -10,10 +10,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
   annotations:
     {{- if .Values.registry.ingress.class }}
-    kubernetes.io/ingress.class: "{{ .Values.ingress.class }}"
+    kubernetes.io/ingress.class: "{{ .Values.registry.ingress.class }}"
     {{- end }}
     {{- if .Values.registry.ingress.tlsacme }}
-    kubernetes.io/tlsacme: "true"
+    kubernetes.io/tls-acme: "true"
     {{- end }}
 spec:
   tls:
@@ -26,6 +26,6 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ .Release.Name }}-registry-{{ .Chart.Name }}
           servicePort: {{ .Values.registry.externalPort }}
 {{- end }}

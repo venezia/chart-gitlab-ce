@@ -73,8 +73,10 @@ registry:
     class: gitlab
     tlsacme: true
     tls:
-      key: "KEYGOESHERE"
-      certificate: "CERTGOESHERE"
+      key:
+      certificate:
+      #key: "KEYGOESHERE"
+      #certificate: "CERTGOESHERE"
 
   storage:
     driver: s3

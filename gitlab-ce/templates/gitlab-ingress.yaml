@@ -13,7 +13,7 @@ metadata:
     kubernetes.io/ingress.class: "{{ .Values.ingress.class }}"
     {{- end }}
     {{- if .Values.ingress.tlsacme }}
-    kubernetes.io/tlsacme: "true"
+    kubernetes.io/tls-acme: "true"
     {{- end }}
 spec:
   tls:
