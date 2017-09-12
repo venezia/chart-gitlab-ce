@@ -1,4 +1,4 @@
-image: quay.io/samsung_cnct/helm-registry-agent:v0.2.0
+image: quay.io/samsung_cnct/helm-registry-agent:v0.3.0
 
 variables:
   CHART_REL: ${CI_COMMIT_SHA}
