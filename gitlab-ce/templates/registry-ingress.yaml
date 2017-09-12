@@ -1,0 +1,31 @@
+{{- if .Values.registry.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-registry-{{ .Chart.Name }}"
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- if .Values.registry.ingress.class }}
+    kubernetes.io/ingress.class: "{{ .Values.registry.ingress.class }}"
+    {{- end }}
+    {{- if .Values.registry.ingress.tlsacme }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.registry.ingress.hostname }}
+    secretName: "{{ .Release.Name }}-registry-tls-secret"
+  rules:
+  - host: {{ .Values.registry.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Release.Name }}-registry-{{ .Chart.Name }}
+          servicePort: {{ .Values.registry.externalPort }}
+{{- end }}

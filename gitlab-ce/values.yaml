@@ -57,6 +57,35 @@ email:
   from: "gitlab@my.favorite.site.com"
   replyTo: "noreply@my.favorite.site.com"
 
+registry:
+  enabled: true
+  externalURL: http://registry.mysite.com
+
+  externalPort: 80
+  internalPort: 5000
+
+  serviceType: LoadBalancer
+
+  ingress:
+    enabled: false
+    sslEnabled: false
+    hostname: my.favorite.site.com
+    class: gitlab
+    tlsacme: true
+    tls:
+      key:
+      certificate:
+      #key: "KEYGOESHERE"
+      #certificate: "CERTGOESHERE"
+
+  storage:
+    driver: s3
+    s3:
+      accessKey:
+      secretKey:
+      bucket:
+      region:
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
