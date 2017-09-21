@@ -70,11 +70,9 @@ data:
     nginx['proxy_set_headers'] = { "X-Forwarded-Proto" => "https", "X-Forwarded-Ssl" => "on" }
     {{- end }}
     {{- end }}
-    {{- if .Values.prometheus.enabled }}
-    prometheus_monitoring['enable'] = {{ .Values.prometheus.enabled }}
-    {{- end }}
+    prometheus_monitoring['enable'] = {{ default "false" .Values.prometheus.enabled | quote }}
     {{- if .Values.registry.enabled }}
-    registry_external_url {{ .Values.registry.externalURL }};
+    registry_external_url {{ .Values.registry.externalURL |quote }};
     registry['registry_http_addr'] = '0.0.0.0:{{ .Values.registry.internalPort }}'
     {{- if eq .Values.registry.storage.driver "s3" }}
     registry['storage'] = { 's3' => { 'accesskey' => '{{ .Values.registry.storage.s3.accessKey }}', 'secretkey' => '{{ .Values.registry.storage.s3.secretKey }}', 'bucket' => '{{ .Values.registry.storage.s3.bucket }}', 'region' => '{{ .Values.registry.storage.s3.region }}' } }
