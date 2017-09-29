@@ -74,7 +74,7 @@ data:
     prometheus_monitoring['enable'] = {{ .Values.prometheus.enabled }}
     {{- end }}
     {{- if .Values.registry.enabled }}
-    registry_external_url {{ .Values.registry.externalURL }};
+    registry_external_url '{{ .Values.registry.externalURL }}';
     registry['registry_http_addr'] = '0.0.0.0:{{ .Values.registry.internalPort }}'
     {{- if eq .Values.registry.storage.driver "s3" }}
     registry['storage'] = { 's3' => { 'accesskey' => '{{ .Values.registry.storage.s3.accessKey }}', 'secretkey' => '{{ .Values.registry.storage.s3.secretKey }}', 'bucket' => '{{ .Values.registry.storage.s3.bucket }}', 'region' => '{{ .Values.registry.storage.s3.region }}' } }
