@@ -9,6 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
+    ingress.kubernetes.io/proxy-body-size: "0"
     {{- if .Values.registry.ingress.class }}
     kubernetes.io/ingress.class: "{{ .Values.registry.ingress.class }}"
     {{- end }}
