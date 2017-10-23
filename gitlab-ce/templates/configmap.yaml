@@ -62,6 +62,9 @@ data:
     {{- if .Values.email.replyTo }}
     gitlab_rails['gitlab_email_reply_to'] = "{{ .Values.email.replyTo }}"
     {{- end }}
+    {{- if .Values.email.tls }}
+    gitlab_rails['smtp_tls'] = true
+    {{- end }}
     {{- end }}
     {{- if .Values.ingress.enabled }}
     {{- if .Values.ingress.sslEnabled }}
